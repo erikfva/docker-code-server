@@ -46,7 +46,7 @@ RUN \
     /var/tmp/*
 
 RUN apt-get update
-RUN apt-get install ca-certificates curl gnupg
+RUN apt-get install -y ca-certificates curl gnupg
 RUN install -m 0755 -d /etc/apt/keyrings
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 RUN chmod a+r /etc/apt/keyrings/docker.gpg
@@ -62,13 +62,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 RUN apt-get install -y nodejs
 RUN node --version
 RUN npm --version
+RUN npm install --yes --global yarn
 
 # add local files
 COPY /root /
 
 RUN sudo apt install -y s3fs
-# RUN echo 7004B98DEED21FB0A63A:n2oYUDMugcOigbKSj2NyR4deCWh1uk2FBNb6Gjq7 > ${HOME}/.passwd-s3fs
-# RUN chmod 600 ${HOME}/.passwd-s3fs
 
 # ports and volumes
 EXPOSE 8443
