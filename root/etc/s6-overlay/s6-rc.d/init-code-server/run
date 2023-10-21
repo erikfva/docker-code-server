@@ -37,3 +37,9 @@ echo $S3_ACCESS_KEY_ID:$S3_SECRET_ACCESS_KEY > ${HOME}/.passwd-s3fs
 chmod 600 ${HOME}/.passwd-s3fs
 mkdir /mnt/s3
 s3fs ${S3_BUCKET} /mnt/s3 -o passwd_file=${HOME}/.passwd-s3fs -o url=${S3_ENDPOINT} -o use_path_request_style -o uid=1000 -o gid=1000 -o umask=0002 -o allow_other -o mp_umask=0002 -o multireq_max=5 -o use_cache=/tmp -o nonempty -o use_xattr -o enable_noobj_cache -o parallel_count=10 #-o dbglevel=info -o curldbg
+
+# add SSH file
+eval "$(ssh-agent -s)"
+cp /mnt/s3/.ssh/id_ed25519 ~/.ssh/
+chmod 600 ~/.ssh/id_ed25519
+ssh-add ~/.ssh/id_ed25519
