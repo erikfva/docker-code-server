@@ -28,7 +28,7 @@ services:
       - "apparmor=unconfined"
     volumes:
       # - /path/to/appdata/config:/config
-      # - ./root/etc/s6-overlay/s6-rc.d/init-code-server/run:/etc/s6-overlay/s6-rc.d/init-code-server/run
+      - ./root/etc/s6-overlay/s6-rc.d/init-code-server/run:/etc/s6-overlay/s6-rc.d/init-code-server/run
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8443:8443

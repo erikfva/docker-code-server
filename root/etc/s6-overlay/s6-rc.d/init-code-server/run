@@ -42,13 +42,19 @@ s3fs ${S3_BUCKET} /mnt/s3 -o passwd_file=${HOME}/.passwd-s3fs -o url=${S3_ENDPOI
 
 read_count=3
 interval_time=5
+ssh_file="/mnt/s3/.ssh/id_ed25519"
 for((i=1;i<=$read_count;i++))
 do
   if [ -f "$ssh_file" ]; then
     echo "ssh file exist ***"
     # eval "$(ssh-agent -s)"
-    cp /mnt/s3/.ssh/id_ed25519 /config/.ssh/
+    cp $ssh_file /config/.ssh/
+    chown abc:abc /config/.ssh
     chmod 600 /config/.ssh/id_ed25519
+    # ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+    # ssh-add /config/.ssh/id_ed25519
+    # ssh -T git@github.com
+
     # cat /config/.ssh/id_ed25519 | tr -d '\r' | ssh-add - > /dev/null
     # ssh-keyscan github.com >> /config/.ssh/known_hosts
     # ssh-add /config/.ssh/id_ed25519
