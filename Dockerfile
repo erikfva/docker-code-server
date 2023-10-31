@@ -64,6 +64,16 @@ RUN node --version
 RUN npm --version
 RUN npm install --yes --global yarn
 
+# install extensions
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension ms-azuretools.vscode-docker
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension IronGeek.vscode-env
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension esbenp.prettier-vscode
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension redhat.vscode-yaml
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension Vue.volar
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension johnsoncodehk.vscode-typescript-vue-plugin
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension nick-rudenko.back-n-forth
+RUN /app/code-server/bin/code-server  --extensions-dir ~/extensions  --install-extension humao.rest-client
+
 # add local files
 COPY /root /
 
