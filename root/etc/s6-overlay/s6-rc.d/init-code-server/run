@@ -66,3 +66,6 @@ do
     sleep $interval_time
   fi
 done 
+# echo "installing extensions***"
+# /app/code-server/bin/code-server  --extensions-dir /config/extensions  --install-extension IronGeek.vscode-env
+mv  -v /temp/config/extensions/* /config/extensions/
