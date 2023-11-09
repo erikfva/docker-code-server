@@ -21,6 +21,9 @@ services:
       - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
       - S3_BUCKET=code-server
       - S3_ENDPOINT=https://s3.filebase.com
+      - GIT_USER_NAME=${GIT_USER_NAME}
+      - GIT_USER_EMAIL=${GIT_USER_EMAIL}
+      - CODE_FOLDER_DIR=/mnt/s3
     devices:
       - "/dev/fuse"
     security_opt:

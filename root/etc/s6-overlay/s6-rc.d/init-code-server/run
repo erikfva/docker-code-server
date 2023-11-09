@@ -32,40 +32,47 @@ fi
 
 # echo $S3_ACCESS_KEY_ID:$S3_SECRET_ACCESS_KEY > /etc/passwd-s3fs
 # chmod 600 /etc/passwd-s3fs
+if [ -n "${S3_ACCESS_KEY_ID}" ]; then
+    echo $S3_ACCESS_KEY_ID:$S3_SECRET_ACCESS_KEY > ${HOME}/.passwd-s3fs
+    chmod 600 ${HOME}/.passwd-s3fs
+    mkdir /mnt/s3
+    s3fs ${S3_BUCKET} /mnt/s3 -o passwd_file=${HOME}/.passwd-s3fs -o url=${S3_ENDPOINT} -o use_path_request_style -o uid=1000 -o gid=1000 -o umask=0002 -o allow_other -o mp_umask=0002 -o multireq_max=5 -o use_cache=/tmp -o nonempty -o use_xattr -o enable_noobj_cache -o parallel_count=10 #-o dbglevel=info -o curldbg
 
-echo $S3_ACCESS_KEY_ID:$S3_SECRET_ACCESS_KEY > ${HOME}/.passwd-s3fs
-chmod 600 ${HOME}/.passwd-s3fs
-mkdir /mnt/s3
-s3fs ${S3_BUCKET} /mnt/s3 -o passwd_file=${HOME}/.passwd-s3fs -o url=${S3_ENDPOINT} -o use_path_request_style -o uid=1000 -o gid=1000 -o umask=0002 -o allow_other -o mp_umask=0002 -o multireq_max=5 -o use_cache=/tmp -o nonempty -o use_xattr -o enable_noobj_cache -o parallel_count=10 #-o dbglevel=info -o curldbg
+    # add SSH file
 
-# add SSH file
+    read_count=3
+    interval_time=5
+    ssh_file="/mnt/s3/.ssh/id_ed25519"
+    for((i=1;i<=$read_count;i++))
+    do
+    if [ -f "$ssh_file" ]; then
+        echo "ssh file exist ***"
+        # eval "$(ssh-agent -s)"
+        cp $ssh_file /config/.ssh/
+        chown abc:abc /config/.ssh
+        chmod 600 /config/.ssh/id_ed25519
+        # ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        # ssh-add /config/.ssh/id_ed25519
+        # ssh -T git@github.com
 
-read_count=3
-interval_time=5
-ssh_file="/mnt/s3/.ssh/id_ed25519"
-for((i=1;i<=$read_count;i++))
-do
-  if [ -f "$ssh_file" ]; then
-    echo "ssh file exist ***"
-    # eval "$(ssh-agent -s)"
-    cp $ssh_file /config/.ssh/
-    chown abc:abc /config/.ssh
-    chmod 600 /config/.ssh/id_ed25519
-    # ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-    # ssh-add /config/.ssh/id_ed25519
-    # ssh -T git@github.com
+        # cat /config/.ssh/id_ed25519 | tr -d '\r' | ssh-add - > /dev/null
+        # ssh-keyscan github.com >> /config/.ssh/known_hosts
+        # ssh-add /config/.ssh/id_ed25519
+        # ssh-keyscan -t rsa github.com >> /config/.ssh/known_hosts
+        # ssh -T git@github.com
+        break
+    else
+        echo "ssh file not exist, wait $interval_time seconds"
+        sleep $interval_time
+    fi
+    done
+fi
 
-    # cat /config/.ssh/id_ed25519 | tr -d '\r' | ssh-add - > /dev/null
-    # ssh-keyscan github.com >> /config/.ssh/known_hosts
-    # ssh-add /config/.ssh/id_ed25519
-    # ssh-keyscan -t rsa github.com >> /config/.ssh/known_hosts
-    # ssh -T git@github.com
-    break
-  else
-    echo "ssh file not exist, wait $interval_time seconds"
-    sleep $interval_time
-  fi
-done 
+if [ -n "${GIT_USER_NAME}" ]; then
+    git config --global user.name "${GIT_USER_NAME}"
+    git config --global user.email "${GIT_USER_EMAIL}"
+fi
+
 # echo "installing extensions***"
 # /app/code-server/bin/code-server  --extensions-dir /config/extensions  --install-extension IronGeek.vscode-env
 mv  -v /temp/config/extensions/* /config/extensions/
