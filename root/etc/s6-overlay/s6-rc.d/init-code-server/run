@@ -76,3 +76,12 @@ fi
 # echo "installing extensions***"
 # /app/code-server/bin/code-server  --extensions-dir /config/extensions  --install-extension IronGeek.vscode-env
 mv  -v /temp/config/extensions/* /config/extensions/
+
+if [ -n "${TOKEN_NGROK}" ]; then
+    echo "starting ngrok"
+    /app/ngrok config add-authtoken ${TOKEN_NGROK}
+    mkdir -p /app/logs
+    /app/ngrok http --log=stdout 8443 > /app/logs/ngrok.log & 
+    sleep 7 
+    grep "started tunnel" /app/logs/ngrok.log | awk '{print $NF}' > /config/workspace/https_url.txt
+fi

@@ -80,5 +80,16 @@ RUN /app/code-server/bin/code-server  --extensions-dir /temp/config/extensions  
 RUN /app/code-server/bin/code-server  --extensions-dir /temp/config/extensions  --install-extension nick-rudenko.back-n-forth
 RUN /app/code-server/bin/code-server  --extensions-dir /temp/config/extensions  --install-extension humao.rest-client
 
+# install ngrok
+
+RUN curl -o \
+    /tmp/ngrok.tgz -L \
+    "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz" && \
+    tar zxvf tmp/ngrok.tgz -C /app && \
+  echo "**** clean up ****" && \
+  apt-get clean && \
+  rm -rf \
+    /tmp/*
+
 # ports and volumes
 EXPOSE 8443
