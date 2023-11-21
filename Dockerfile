@@ -20,6 +20,7 @@ RUN \
   apt-get update && \
   apt-get install -y \
     git \
+    openssh-client \
     jq \
     libatomic1 \
     nano \
