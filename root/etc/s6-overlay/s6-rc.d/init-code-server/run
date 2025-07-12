@@ -95,4 +95,20 @@ if [ -n "${TOKEN_NGROK}" ]; then
     grep "started tunnel" /app/logs/ngrok.log | awk '{print $NF}' > /config/workspace/https_url.txt
 fi
 
+# expose PORTS with cloudflare
+IFS=',' read -ra PORTS <<< "${HTTPS_PORTS:-3000}"
+for port in "${PORTS[@]}"; do
+    cloudflared tunnel --url http://localhost:$port --logfile /app/logs/cloudflared_$port.log &
+done
+
+# Wait for the tunnels to be established and extract the URLs
+sleep 7
+for port in "${PORTS[@]}"; do
+    cf_url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.trycloudflare\.com' /app/logs/cloudflared_$port.log | head -n 1)
+    if [ -n "$cf_url" ]; then
+        echo "# PORT $port" >> /config/workspace/https_url.txt
+        echo "$cf_url" >> /config/workspace/https_url.txt
+    fi
+done
+
 echo 'echo "Welcome to code-server terminal! power by Erik Vargas"' >> ~/.bashrc

@@ -38,6 +38,8 @@ RUN apt-get update && apt-get install -y \
     && tar xf /tmp/code-server.tar.gz -C /app/code-server --strip-components=1 \
     && curl -o /tmp/ngrok.tgz -L "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz" \
     && tar zxvf /tmp/ngrok.tgz -C /app \
+    && curl -LO https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb \
+    && dpkg -i cloudflared-linux-amd64.deb \
     && mkdir -p /temp/config/extensions \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension ms-azuretools.vscode-docker \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension IronGeek.vscode-env \

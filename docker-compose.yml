@@ -26,6 +26,7 @@ services:
       - CODE_FOLDER_DIR=/mnt/s3
       - TOKEN_NGROK=${TOKEN_NGROK}
       - DISPLAY=bdd-ui:0.0
+      - HTTPS_PORTS=3000,8081
     depends_on:
       - bdd-ui
     devices:
