@@ -90,13 +90,13 @@ if [ -n "${TOKEN_NGROK}" ]; then
     echo "starting ngrok"
     /app/ngrok config add-authtoken ${TOKEN_NGROK}
     mkdir -p /app/logs
-    /app/ngrok http --log=stdout 8443 > /app/logs/ngrok.log & 
+    /app/ngrok http --log=stdout 3000 > /app/logs/ngrok.log & 
     sleep 7 
     grep "started tunnel" /app/logs/ngrok.log | awk '{print $NF}' > /config/workspace/https_url.txt
 fi
 
 # expose PORTS with cloudflare
-IFS=',' read -ra PORTS <<< "${HTTPS_PORTS:-3000}"
+IFS=',' read -ra PORTS <<< "${HTTPS_PORTS:-8443}"
 for port in "${PORTS[@]}"; do
     cloudflared tunnel --url http://localhost:$port --logfile /app/logs/cloudflared_$port.log &
 done
