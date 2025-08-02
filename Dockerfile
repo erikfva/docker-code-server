@@ -45,7 +45,6 @@ RUN apt-get update && apt-get install -y \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension IronGeek.vscode-env \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension esbenp.prettier-vscode \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension redhat.vscode-yaml \
-    && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension Vue.volar \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension johnsoncodehk.vscode-typescript-vue-plugin \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension nick-rudenko.back-n-forth \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension humao.rest-client \

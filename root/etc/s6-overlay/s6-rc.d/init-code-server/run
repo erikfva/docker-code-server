@@ -41,7 +41,9 @@ if [ -n "${S3_ACCESS_KEY_ID}" ]; then
     echo $S3_ACCESS_KEY_ID:$S3_SECRET_ACCESS_KEY > ${HOME}/.passwd-s3fs
     chmod 600 ${HOME}/.passwd-s3fs
     mkdir /mnt/s3
-    s3fs ${S3_BUCKET} /mnt/s3 -o passwd_file=${HOME}/.passwd-s3fs -o url=${S3_ENDPOINT} -o use_path_request_style -o uid=1000 -o gid=1000 -o umask=0002 -o allow_other -o mp_umask=0002 -o multireq_max=5 -o use_cache=/tmp -o nonempty -o use_xattr -o enable_noobj_cache -o parallel_count=10 #-o dbglevel=info -o curldbg
+    mkdir -p /config/s3cache
+    chmod 777 /config/s3cache
+    s3fs ${S3_BUCKET} /mnt/s3 -o passwd_file=${HOME}/.passwd-s3fs -o url=${S3_ENDPOINT} -o use_path_request_style -o uid=1000 -o gid=1000 -o umask=0002 -o allow_other -o mp_umask=0002 -o multireq_max=5 -o use_cache=/config/s3cache -o nonempty -o use_xattr -o enable_noobj_cache -o parallel_count=10 #-o dbglevel=info -o curldbg
 
     # add SSH file
 
@@ -85,6 +87,26 @@ fi
 # echo "installing extensions***"
 # /app/code-server/bin/code-server  --extensions-dir /config/extensions  --install-extension IronGeek.vscode-env
 mv  -v /temp/config/extensions/* /config/extensions/
+
+CODE_BIN=/app/code-server/bin/code-server
+EXT_DIR=/config/extensions
+echo "[init-extensions] Starting runtime extension installation..." >&2
+install_one() {
+  i=0; until [ $i -ge 3 ]; do
+    if "$CODE_BIN" --extensions-dir "$EXT_DIR" --install-extension "$1"; then
+      echo "[init-extensions] Installed $1" >&2
+      return 0
+    fi
+    i=$((i+1)); sleep $((2**i))
+  done
+  echo "[init-extensions] Failed to install $1" >&2
+}
+echo "[init-extensions] Extensions to install: $EXTENSIONS_RUNTIME" >&2
+for ext in $EXTENSIONS_RUNTIME; do
+  [ -n "$ext" ] && install_one "$ext"
+done
+echo "[init-extensions] Finished runtime extension installation." >&2
+
 
 if [ -n "${TOKEN_NGROK}" ]; then
     echo "starting ngrok"
