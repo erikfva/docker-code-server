@@ -26,10 +26,8 @@ services:
       - CODE_FOLDER_DIR=/mnt/s3
       - TOKEN_NGROK=${TOKEN_NGROK}
       - DISPLAY=bdd-ui:0.0
-      - HTTPS_PORTS=3000,8081
+      # - HTTPS_PORTS=3000,8000
       - EXTENSIONS_RUNTIME=${EXTENSIONS_RUNTIME}
-    depends_on:
-      - bdd-ui
     devices:
       - "/dev/fuse"
     security_opt:
@@ -43,13 +41,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8443:8443
+      # - 8000:8000
+    # depends_on:
+    #   - bdd-ui
   
-  bdd-ui:
-    image: theasp/novnc:latest
-    environment:
-      # Adjust to your screen size
-      - DISPLAY_WIDTH=1920
-      - DISPLAY_HEIGHT=1200
-      - RUN_XTERM=no
-    ports:
-      - "8080:8080"
+  # bdd-ui:
+  #   image: theasp/novnc:latest
+  #   environment:
+  #     # Adjust to your screen size
+  #     - DISPLAY_WIDTH=1920
+  #     - DISPLAY_HEIGHT=1200
+  #     - RUN_XTERM=no
+  #   ports:
+  #     - "8080:8080"

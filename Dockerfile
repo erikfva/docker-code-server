@@ -9,11 +9,7 @@ LABEL maintainer="aptalca"
 
 # Environment settings
 ARG DEBIAN_FRONTEND="noninteractive"
-ENV HOME="/config" \
-    S3_ACCESS_KEY_ID= \
-    S3_SECRET_ACCESS_KEY= \
-    S3_BUCKET= \
-    S3_ENDPOINT=
+ENV HOME="/config" 
 
 # Install dependencies and clean up in a single RUN command
 RUN apt-get update && apt-get install -y \
@@ -45,7 +41,6 @@ RUN apt-get update && apt-get install -y \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension IronGeek.vscode-env \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension esbenp.prettier-vscode \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension redhat.vscode-yaml \
-    && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension johnsoncodehk.vscode-typescript-vue-plugin \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension nick-rudenko.back-n-forth \
     && /app/code-server/bin/code-server --extensions-dir /temp/config/extensions --install-extension humao.rest-client \
     && apt-get clean \
