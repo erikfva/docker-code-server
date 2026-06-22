@@ -32,8 +32,8 @@ RUN apt-get update && apt-get install -y \
     && mkdir -p /app/code-server \
     && curl -o /tmp/code-server.tar.gz -L "https://github.com/coder/code-server/releases/download/v${CODE_RELEASE}/code-server-${CODE_RELEASE}-linux-amd64.tar.gz" \
     && tar xf /tmp/code-server.tar.gz -C /app/code-server --strip-components=1 \
-    && curl -o /tmp/ngrok.tgz -L "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz" \
-    && tar zxvf /tmp/ngrok.tgz -C /app \
+    # && curl -o /tmp/ngrok.tgz -L "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz" \
+    # && tar zxvf /tmp/ngrok.tgz -C /app \
     && curl -LO https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb \
     && dpkg -i cloudflared-linux-amd64.deb \
     && mkdir -p /temp/extensions \

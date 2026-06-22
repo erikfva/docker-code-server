@@ -88,6 +88,14 @@ if [ -n "${S3_ACCESS_KEY_ID}" ]; then
     done
 fi
 
+CUSTOM_INIT_FILE="/mnt/s3/${INIT_FILE}"
+
+if [ -f $CUSTOM_INIT_FILE ]; then
+    echo "custom init file ${CUSTOM_INIT_FILE} exist ***"
+    chmod +x ${CUSTOM_INIT_FILE}
+    ${CUSTOM_INIT_FILE}
+fi
+
 # echo "installing extensions***"
 # /app/code-server/bin/code-server  --extensions-dir "${HOME}/extensions"  --install-extension IronGeek.vscode-env
 mv  -v /temp/extensions/* "${HOME}/extensions/"
@@ -111,15 +119,14 @@ for ext in $EXTENSIONS_RUNTIME; do
 done
 echo "[init-extensions] Finished runtime extension installation." >&2
 
-
-if [ -n "${TOKEN_NGROK}" ]; then
-    echo "starting ngrok"
-    /app/ngrok config add-authtoken ${TOKEN_NGROK}
-    mkdir -p /app/logs
-    /app/ngrok http --log=stdout 3000 > /app/logs/ngrok.log & 
-    sleep 7 
-    grep "started tunnel" /app/logs/ngrok.log | awk '{print $NF}' > "${HOME}/workspace/https_url.txt"
-fi
+# if [ -n "${TOKEN_NGROK}" ]; then
+#     echo "starting ngrok"
+#     /app/ngrok config add-authtoken ${TOKEN_NGROK}
+#     mkdir -p /app/logs
+#     /app/ngrok http --log=stdout 3000 > /app/logs/ngrok.log & 
+#     sleep 7 
+#     grep "started tunnel" /app/logs/ngrok.log | awk '{print $NF}' > "${HOME}/workspace/https_url.txt"
+# fi
 
 # expose PORTS with cloudflare
 IFS=',' read -ra PORTS <<< "${HTTPS_PORTS:-8443}"
