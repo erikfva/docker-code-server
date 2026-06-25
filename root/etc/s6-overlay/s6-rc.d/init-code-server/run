@@ -100,6 +100,31 @@ fi
 # /app/code-server/bin/code-server  --extensions-dir "${HOME}/extensions"  --install-extension IronGeek.vscode-env
 mv  -v /temp/extensions/* "${HOME}/extensions/"
 
+settings_file="${HOME}/data/User/settings.json"
+mkdir -p "$(dirname "${settings_file}")"
+if [ ! -f "${settings_file}" ]; then
+    printf '{\n  "redhat.telemetry.enabled": false,\n  "security.workspace.trust.enabled": false,\n  "workbench.secondarySideBar.defaultVisibility": "hidden"\n}\n' > "${settings_file}"
+elif jq empty "${settings_file}" >/dev/null 2>&1; then
+    tmp_settings="$(mktemp)"
+    jq '
+      if has("redhat.telemetry.enabled") then .
+      else . + {"redhat.telemetry.enabled": false}
+      end
+      | if has("security.workspace.trust.enabled") then .
+      else . + {"security.workspace.trust.enabled": false}
+      end
+      | if has("workbench.secondarySideBar.defaultVisibility") then .
+      else . + {"workbench.secondarySideBar.defaultVisibility": "hidden"}
+      end
+    ' "${settings_file}" > "${tmp_settings}" && \
+        if cmp -s "${tmp_settings}" "${settings_file}"; then
+            rm -f "${tmp_settings}"
+        else
+            mv "${tmp_settings}" "${settings_file}"
+        fi
+fi
+chown abc:abc "${settings_file}"
+
 CODE_BIN=/app/code-server/bin/code-server
 EXT_DIR="${HOME}/extensions"
 echo "[init-extensions] Starting runtime extension installation..." >&2
@@ -118,15 +143,6 @@ for ext in $EXTENSIONS_RUNTIME; do
   [ -n "$ext" ] && install_one "$ext"
 done
 echo "[init-extensions] Finished runtime extension installation." >&2
-
-# if [ -n "${TOKEN_NGROK}" ]; then
-#     echo "starting ngrok"
-#     /app/ngrok config add-authtoken ${TOKEN_NGROK}
-#     mkdir -p /app/logs
-#     /app/ngrok http --log=stdout 3000 > /app/logs/ngrok.log & 
-#     sleep 7 
-#     grep "started tunnel" /app/logs/ngrok.log | awk '{print $NF}' > "${HOME}/workspace/https_url.txt"
-# fi
 
 # expose PORTS with cloudflare
 IFS=',' read -ra PORTS <<< "${HTTPS_PORTS:-8443}"

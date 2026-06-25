@@ -29,6 +29,7 @@ exec \
                 --user-data-dir "${HOME}/data" \
                 --extensions-dir "${HOME}/extensions" \
                 --disable-telemetry \
+                --disable-workspace-trust \
                 --auth "${AUTH}" \
                 "${PROXY_DOMAIN_ARG}" \
                 "${DEFAULT_WORKSPACE2:-${HOME}/workspace}"

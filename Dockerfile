@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g yarn \
+    && npm install -g @playwright/mcp \
     && npx playwright install-deps \
     && npx playwright install webkit chromium \
     && if [ -z ${CODE_RELEASE+x} ]; then \
@@ -32,8 +33,6 @@ RUN apt-get update && apt-get install -y \
     && mkdir -p /app/code-server \
     && curl -o /tmp/code-server.tar.gz -L "https://github.com/coder/code-server/releases/download/v${CODE_RELEASE}/code-server-${CODE_RELEASE}-linux-amd64.tar.gz" \
     && tar xf /tmp/code-server.tar.gz -C /app/code-server --strip-components=1 \
-    # && curl -o /tmp/ngrok.tgz -L "https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz" \
-    # && tar zxvf /tmp/ngrok.tgz -C /app \
     && curl -LO https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb \
     && dpkg -i cloudflared-linux-amd64.deb \
     && mkdir -p /temp/extensions \
@@ -41,7 +40,6 @@ RUN apt-get update && apt-get install -y \
     && /app/code-server/bin/code-server --extensions-dir /temp/extensions --install-extension IronGeek.vscode-env \
     && /app/code-server/bin/code-server --extensions-dir /temp/extensions --install-extension esbenp.prettier-vscode \
     && /app/code-server/bin/code-server --extensions-dir /temp/extensions --install-extension redhat.vscode-yaml \
-    && /app/code-server/bin/code-server --extensions-dir /temp/extensions --install-extension nick-rudenko.back-n-forth \
     && /app/code-server/bin/code-server --extensions-dir /temp/extensions --install-extension humao.rest-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* "${HOME:?}"/*

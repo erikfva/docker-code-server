@@ -68,7 +68,8 @@ Two main services:
 - Node.js 22.x
 - yarn
 - npm
-- Playwright (for browser automation)
+- Playwright browser dependencies plus Chromium and WebKit browser binaries
+- Playwright MCP Server (`@playwright/mcp` - globally installed via npm)
 - Docker CLI and Docker Compose plugin
 
 **Pre-installed Extensions:**
@@ -76,15 +77,21 @@ Two main services:
 - IronGeek.vscode-env
 - esbenp.prettier-vscode
 - redhat.vscode-yaml
-- nick-rudenko.back-n-forth
 - humao.rest-client
+
+Red Hat extension telemetry is disabled during container init by setting
+`redhat.telemetry.enabled` to `false` in code-server user settings.
+The secondary side bar is also seeded closed by default with
+`workbench.secondarySideBar.defaultVisibility` set to `hidden`.
 
 **Utilities:**
 - git, openssh-client, jq
-- nano, sudo, curl, wget
+- nano, sudo, curl
 - s3fs (for S3 integration)
-- ngrok (for tunneling)
 - cloudflared (for Cloudflare Tunnel)
+
+**Not Installed by the Dockerfile:**
+- wget
 
 ## Environment Variables
 
@@ -128,7 +135,6 @@ When these are set, code-server creates a default workspace that mounts S3:
 ### Cloud Services
 | Variable | Purpose | Example |
 |----------|---------|---------|
-| `TOKEN_NGROK` | ngrok authentication token | `12345abcde` |
 | `EXTENSIONS_RUNTIME` | Extensions to install at runtime | `Vue.volar dbaeumer.vscode-eslint` |
 
 ## Build & Deployment
